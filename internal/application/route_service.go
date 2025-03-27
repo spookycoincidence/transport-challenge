@@ -23,12 +23,11 @@ func (s *RouteService) CreateRoute(route *domain.Route) (int, error) {
 		return 0, err
 	}
 
-	// Establecer valores por defecto
 	route.Status = domain.RouteStatusPending
 	route.CreatedAt = time.Now()
 	route.UpdatedAt = time.Now()
 
-	// Crear ruta
+	// Crea ruta
 	id, err := s.routeRepo.Create(*route)
 	if err != nil {
 		return 0, fmt.Errorf("failed to create route: %w", err)
@@ -54,20 +53,18 @@ func (s *RouteService) UpdateRoute(id int, route *domain.Route) error {
 		return err
 	}
 
-	// Verificar si la ruta existe
 	existingRoute, err := s.routeRepo.GetByID(id)
 	if err != nil {
 		return fmt.Errorf("route not found: %w", err)
 	}
 
-	// Actualizar campos modificables
+	// Actualiza campos modificables
 	existingRoute.Name = route.Name
 	existingRoute.Vehicle = route.Vehicle
 	existingRoute.Driver = route.Driver
 	existingRoute.Status = route.Status
 	existingRoute.UpdatedAt = time.Now()
 
-	// Persistir cambios
 	if err := s.routeRepo.Update(id, existingRoute); err != nil {
 		return fmt.Errorf("failed to update route: %w", err)
 	}
@@ -75,11 +72,7 @@ func (s *RouteService) UpdateRoute(id int, route *domain.Route) error {
 	return nil
 }
 
-// Métodos existentes previamente...
-
-// GetRoutesByStatus recupera rutas por su estado
 func (s *RouteService) GetRoutesByStatus(status domain.RouteStatus) ([]domain.Route, error) {
-	// Si no se proporciona un estado, devolver todas las rutas
 	if status == "" {
 		return s.routeRepo.List()
 	}
@@ -94,24 +87,20 @@ func (s *RouteService) GetRoutesByStatus(status domain.RouteStatus) ([]domain.Ro
 
 // AssignPurchaseToRoute asigna una compra a una ruta
 func (s *RouteService) AssignPurchaseToRoute(routeID int, purchase domain.Purchase) error {
-	// Recuperar la ruta existente
 	route, err := s.routeRepo.GetByID(routeID)
 	if err != nil {
 		return fmt.Errorf("route not found: %w", err)
 	}
 
-	// Validar que la ruta esté en estado adecuado
 	if route.Status != domain.RouteStatusPending && route.Status != domain.RouteStatusInProgress {
 		return fmt.Errorf("cannot assign purchase to route with status %s", route.Status)
 	}
 
-	// Asignar compra a la ruta
 	err = s.routeRepo.AssignPurchaseToRoute(routeID, purchase)
 	if err != nil {
 		return fmt.Errorf("failed to assign purchase to route: %w", err)
 	}
 
-	// Actualizar estado de la ruta si es necesario
 	if route.Status == domain.RouteStatusPending {
 		route.Status = domain.RouteStatusInProgress
 		route.UpdatedAt = time.Now()
@@ -124,15 +113,12 @@ func (s *RouteService) AssignPurchaseToRoute(routeID int, purchase domain.Purcha
 	return nil
 }
 
-// CompleteRoute marca una ruta como completada
 func (s *RouteService) CompleteRoute(routeID int) error {
-	// Recuperar la ruta
 	route, err := s.routeRepo.GetByID(routeID)
 	if err != nil {
 		return fmt.Errorf("route not found: %w", err)
 	}
 
-	// Validar que todos los paquetes estén entregados
 	allDelivered := true
 	for _, purchase := range route.Purchases {
 		if purchase.Status != "DELIVERED" {
@@ -145,7 +131,6 @@ func (s *RouteService) CompleteRoute(routeID int) error {
 		return fmt.Errorf("cannot complete route: not all purchases are delivered")
 	}
 
-	// Actualizar estado de la ruta
 	route.Status = domain.RouteStatusCompleted
 	route.UpdatedAt = time.Now()
 

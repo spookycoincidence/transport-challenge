@@ -80,13 +80,12 @@ func TestEnviarPush(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.nombre, func(t *testing.T) {
-			// Crear un servidor de prueba
+
 			servidor := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				w.WriteHeader(tc.respuestaServidor)
 			}))
 			defer servidor.Close()
 
-			// Modificar la configuración con el URL del servidor de prueba
 			configPush := tc.configuracionPush
 			if configPush.ServidorAPI == "/test-push" {
 				configPush.ServidorAPI = servidor.URL

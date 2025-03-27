@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-// Errores generales de dominio
+// Errores generales
 var (
 	ErrNotFound = errors.New("record not found")
 )
@@ -25,14 +25,14 @@ var (
 	ErrPurchaseAlreadyExists = errors.New("purchase already exists in route")
 )
 
-// DomainError es una estructura de error personalizada para errores de dominio
+// DomainError error personalizado para errores de dominio
 type DomainError struct {
 	Code    string
 	Message string
 	Err     error
 }
 
-// Error implementa la interfaz de error
+// Interfaz de error
 func (e *DomainError) Error() string {
 	return fmt.Sprintf("%s: %s", e.Code, e.Message)
 }
@@ -51,7 +51,7 @@ func NewDomainError(code, message string, err error) *DomainError {
 	}
 }
 
-// ErrorCodes define códigos de error consistentes
+// ErrorCodes define códigos de error
 var ErrorCodes = struct {
 	NotFound            string
 	ValidationError     string

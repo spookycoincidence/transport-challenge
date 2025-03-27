@@ -5,7 +5,6 @@ import (
 	"os"
 )
 
-// ConfiguracionNotificaciones representa la configuración para diferentes canales de notificación
 type ConfiguracionNotificaciones struct {
 	EmailHabilitado   bool
 	PushHabilitado    bool
@@ -28,14 +27,13 @@ type ConfigPush struct {
 	ClaveAPI    string
 }
 
-// CargarConfiguracionDesdeVariablesEntorno carga la configuración de notificaciones desde variables de entorno
 func CargarConfiguracionDesdeVariablesEntorno() ConfiguracionNotificaciones {
 	return ConfiguracionNotificaciones{
 		EmailHabilitado: os.Getenv("EMAIL_HABILITADO") == "true",
 		PushHabilitado:  os.Getenv("PUSH_HABILITADO") == "true",
 		ConfiguracionSMTP: ConfigSMTP{
 			Host:      os.Getenv("SMTP_HOST"),
-			Puerto:    8025, // Puerto por defecto, se puede configurar
+			Puerto:    8025, // Puerto por defecto
 			Usuario:   os.Getenv("SMTP_USUARIO"),
 			Clave:     os.Getenv("SMTP_CLAVE"),
 			Remitente: os.Getenv("SMTP_REMITENTE"),
@@ -47,7 +45,6 @@ func CargarConfiguracionDesdeVariablesEntorno() ConfiguracionNotificaciones {
 	}
 }
 
-// Validar verifica que la configuración tenga los parámetros necesarios
 func (c *ConfiguracionNotificaciones) Validar() error {
 	if c.EmailHabilitado {
 		if c.ConfiguracionSMTP.Host == "" {

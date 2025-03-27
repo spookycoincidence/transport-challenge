@@ -25,7 +25,7 @@ func NewServer(routeService *application.RouteService) *Server {
 		RouteService: routeService,
 	}
 
-	// Definir rutas
+	// Define rutas
 	server.routes()
 
 	return server
@@ -41,27 +41,23 @@ func (s *Server) routes() {
 func (s *Server) CreateRoute(w http.ResponseWriter, r *http.Request) {
 	var route domain.Route
 
-	// Decodificar el JSON de la solicitud
 	err := json.NewDecoder(r.Body).Decode(&route)
 	if err != nil {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
 	}
 
-	// Validar la ruta
 	if err := route.Validate(); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	// Crear la ruta
 	id, err := s.RouteService.CreateRoute(&route)
 	if err != nil {
 		http.Error(w, "Error creating route: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	// Responder con el ID de la nueva ruta
 	response := map[string]interface{}{"id": id}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
@@ -69,7 +65,7 @@ func (s *Server) CreateRoute(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) GetRoutes(w http.ResponseWriter, r *http.Request) {
-	// Obtener todas las rutas
+
 	routes, err := s.RouteService.GetRoutesByStatus("")
 	if err != nil {
 		http.Error(w, "Error retrieving routes: "+err.Error(), http.StatusInternalServerError)
@@ -82,7 +78,7 @@ func (s *Server) GetRoutes(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) GetRouteByID(w http.ResponseWriter, r *http.Request) {
-	// Obtener el ID de la ruta desde los parámetros de la URL
+	// Obtiene el ID de la ruta desde los parámetros de la URL
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
@@ -90,7 +86,7 @@ func (s *Server) GetRouteByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Buscar la ruta por ID
+	// Busca la ruta por ID
 	route, err := s.RouteService.GetRouteByID(id)
 	if err != nil {
 		if err == domain.ErrNotFound {
@@ -107,7 +103,7 @@ func (s *Server) GetRouteByID(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) UpdateRoute(w http.ResponseWriter, r *http.Request) {
-	// Obtener el ID de la ruta desde los parámetros de la URL
+	// Obtiene el ID de la ruta desde los parámetros de la URL
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
@@ -116,20 +112,17 @@ func (s *Server) UpdateRoute(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var route domain.Route
-	// Decodificar el JSON de la solicitud
 	err = json.NewDecoder(r.Body).Decode(&route)
 	if err != nil {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
 	}
 
-	// Validar la ruta
 	if err := route.Validate(); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	// Actualizar la ruta
 	err = s.RouteService.UpdateRoute(id, &route)
 	if err != nil {
 		if err == domain.ErrNotFound {

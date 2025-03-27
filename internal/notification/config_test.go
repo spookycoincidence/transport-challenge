@@ -16,7 +16,6 @@ func TestCargarConfiguracionDesdeVariablesEntorno(t *testing.T) {
 	os.Setenv("PUSH_SERVIDOR_API", "https://api-push.ejemplo.com")
 	os.Setenv("PUSH_CLAVE_API", "token_push")
 	defer func() {
-		// Limpiar variables de entorno
 		os.Unsetenv("EMAIL_HABILITADO")
 		os.Unsetenv("PUSH_HABILITADO")
 		os.Unsetenv("SMTP_HOST")
@@ -27,10 +26,8 @@ func TestCargarConfiguracionDesdeVariablesEntorno(t *testing.T) {
 		os.Unsetenv("PUSH_CLAVE_API")
 	}()
 
-	// Ejecutar función de carga de configuración
 	configuracion := CargarConfiguracionDesdeVariablesEntorno()
 
-	// Verificar que los valores se hayan cargado correctamente
 	if !configuracion.EmailHabilitado {
 		t.Errorf("Se esperaba que EmailHabilitado fuera true")
 	}

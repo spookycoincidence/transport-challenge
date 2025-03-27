@@ -1,4 +1,4 @@
-package persistence
+package application
 
 import (
 	"log"
@@ -11,7 +11,7 @@ type RouteRepository interface {
 }
 
 type MySQLRouteRepository struct {
-	// Aquí irían las configuraciones o conexiones de MySQL
+	// Aca irían las configuraciones o conexiones reales de MySQL
 }
 
 func NewMySQLRouteRepository() *MySQLRouteRepository {
@@ -19,13 +19,11 @@ func NewMySQLRouteRepository() *MySQLRouteRepository {
 }
 
 func (r *MySQLRouteRepository) Save(route domain.Route) error {
-	// Simulación de la lógica de persistencia
 	log.Println("Saving route to database", route)
 	return nil
 }
 
 func (r *MySQLRouteRepository) FindByID(id int) (domain.Route, error) {
-	// Simulación de la búsqueda de una ruta
 	log.Println("Finding route by ID", id)
 	return domain.Route{}, nil
 }

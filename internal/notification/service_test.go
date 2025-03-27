@@ -16,7 +16,6 @@ func (m *mockServicioEmail) Enviar(notificacion Notificacion) error {
 	return m.error
 }
 
-// Mock de ServicioPush para pruebas
 type mockServicioPush struct {
 	enviado bool
 	error   error

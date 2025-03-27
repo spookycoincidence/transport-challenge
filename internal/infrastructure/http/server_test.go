@@ -79,7 +79,6 @@ func TestCreateRoute(t *testing.T) {
 	mockRepo := NewMockRouteRepository()
 	server := NewServer(mockRepo)
 
-	// Crea una ruta de prueba
 	routeJSON := `{
 		"name": "Test Route",
 		"vehicle": "Truck",
@@ -87,21 +86,16 @@ func TestCreateRoute(t *testing.T) {
 		"status": "PENDING"
 	}`
 
-	// Crea solicitud HTTP
 	req, err := http.NewRequest("POST", "/routes", bytes.NewBufferString(routeJSON))
 	assert.NoError(t, err)
 	req.Header.Set("Content-Type", "application/json")
 
-	// Crea grabador de respuesta
 	recorder := httptest.NewRecorder()
 
-	// Ejecutar manejador
 	server.Router.ServeHTTP(recorder, req)
 
-	// Verificar respuesta
 	assert.Equal(t, http.StatusCreated, recorder.Code)
 
-	// Verificar contenido de la respuesta
 	var response map[string]interface{}
 	err = json.Unmarshal(recorder.Body.Bytes(), &response)
 	assert.NoError(t, err)
@@ -110,10 +104,8 @@ func TestCreateRoute(t *testing.T) {
 }
 
 func TestGetRouteByID(t *testing.T) {
-	// Crea repositorio mock y servidor
 	mockRepo := NewMockRouteRepository()
 
-	// Crea una ruta de prueba
 	testRoute := domain.Route{
 		Name:    "Test Route",
 		Vehicle: "Van",
@@ -122,10 +114,8 @@ func TestGetRouteByID(t *testing.T) {
 	}
 	routeID, _ := mockRepo.Create(testRoute)
 
-	// Crea servidor
 	server := NewServer(mockRepo)
 
-	// Crea solicitud HTTP
 	req, err := http.NewRequest("GET", "/routes/"+mux.Var{Key: "id", Value: "1"}, nil)
 	assert.NoError(t, err)
 
@@ -143,10 +133,8 @@ func TestGetRouteByID(t *testing.T) {
 }
 
 func TestUpdateRoute(t *testing.T) {
-	// Crea repositorio mock y servidor
 	mockRepo := NewMockRouteRepository()
 
-	// Crea una ruta de prueba
 	testRoute := domain.Route{
 		Name:    "Original Route",
 		Vehicle: "Truck",
@@ -155,10 +143,8 @@ func TestUpdateRoute(t *testing.T) {
 	}
 	routeID, _ := mockRepo.Create(testRoute)
 
-	// Crea servidor
 	server := NewServer(mockRepo)
 
-	// Crea ruta actualizada
 	updatedRouteJSON := `{
 		"name": "Updated Route",
 		"vehicle": "Bus",
@@ -166,7 +152,6 @@ func TestUpdateRoute(t *testing.T) {
 		"status": "IN_PROGRESS"
 	}`
 
-	// Crea solicitud HTTP
 	req, err := http.NewRequest("PUT", "/routes/"+mux.Var{Key: "id", Value: "1"}, bytes.NewBufferString(updatedRouteJSON))
 	assert.NoError(t, err)
 	req.Header.Set("Content-Type", "application/json")
@@ -185,18 +170,15 @@ func TestUpdateRoute(t *testing.T) {
 }
 
 func TestCreateRouteValidationError(t *testing.T) {
-	// Crea repositorio mock y servidor
 	mockRepo := NewMockRouteRepository()
 	server := NewServer(mockRepo)
 
-	// Crea una ruta inválida (sin nombre)
 	routeJSON := `{
 		"vehicle": "Truck",
 		"driver": "Julian",
 		"status": "PENDING"
 	}`
 
-	// Crea solicitud HTTP
 	req, err := http.NewRequest("POST", "/routes", bytes.NewBufferString(routeJSON))
 	assert.NoError(t, err)
 	req.Header.Set("Content-Type", "application/json")

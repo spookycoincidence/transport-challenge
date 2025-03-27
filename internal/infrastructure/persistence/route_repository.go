@@ -12,7 +12,7 @@ type InMemoryRouteRepository struct {
 	nextID int
 }
 
-func NewInMemoryRouteRepository() *InMemoryRouteRepository {
+func NewRouteRepository() *InMemoryRouteRepository {
 	return &InMemoryRouteRepository{
 		routes: make(map[int]domain.Route),
 		nextID: 1,
@@ -54,18 +54,15 @@ func (r *InMemoryRouteRepository) Update(id int, route domain.Route) error {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
-	// Verificar si la ruta existe
 	_, exists := r.routes[id]
 	if !exists {
 		return domain.ErrNotFound
 	}
 
-	// Validar la ruta
 	if err := route.Validate(); err != nil {
 		return err
 	}
 
-	// Actualizar la ruta
 	r.routes[id] = route
 
 	return nil
@@ -119,19 +116,16 @@ func (r *InMemoryRouteRepository) AssignPurchaseToRoute(routeID int, purchase do
 		return fmt.Errorf("route with ID %d not found", routeID)
 	}
 
-	// Validar que no exista ya la compra en la ruta
 	for _, existingPurchase := range route.Purchases {
 		if existingPurchase.ID == purchase.ID {
 			return fmt.Errorf("purchase with ID %d already exists in route", purchase.ID)
 		}
 	}
 
-	// Agregar la compra a la ruta
 	route.Purchases = append(route.Purchases, purchase)
 	r.routes[routeID] = route
 
 	return nil
 }
 
-// Implementar la interfaz RouteRepository
 var _ domain.RouteRepository = &InMemoryRouteRepository{}

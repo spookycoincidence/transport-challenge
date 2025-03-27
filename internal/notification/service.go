@@ -15,7 +15,6 @@ const (
 	NotificacionCompraEnError   TipoNotificacion = "COMPRA_EN_ERROR"
 )
 
-// Notificacion representa la estructura básica de una notificación
 type Notificacion struct {
 	Tipo         TipoNotificacion
 	IDCompra     int
@@ -30,7 +29,6 @@ type ServicioNotificaciones struct {
 	pushService  *ServicioPush
 }
 
-// NuevoServicioNotificaciones crea una nueva instancia del servicio de notificaciones
 func NuevoServicioNotificaciones(config ConfiguracionNotificaciones) *ServicioNotificaciones {
 	return &ServicioNotificaciones{
 		config:       config,
@@ -39,25 +37,21 @@ func NuevoServicioNotificaciones(config ConfiguracionNotificaciones) *ServicioNo
 	}
 }
 
-// Notificar envía notificaciones según la configuración
 func (s *ServicioNotificaciones) Notificar(notificacion Notificacion) error {
 	var errores []error
 
-	// Enviar notificación por email si está habilitado
 	if s.config.EmailHabilitado {
 		if err := s.emailService.Enviar(notificacion); err != nil {
 			errores = append(errores, fmt.Errorf("error en notificación por email: %w", err))
 		}
 	}
 
-	// Enviar notificación push si está habilitado
 	if s.config.PushHabilitado {
 		if err := s.pushService.Enviar(notificacion); err != nil {
 			errores = append(errores, fmt.Errorf("error en notificación push: %w", err))
 		}
 	}
 
-	// Si hay errores, registrarlos y devolver un error combinado
 	if len(errores) > 0 {
 		for _, err := range errores {
 			log.Printf("Error de notificación: %v", err)
@@ -68,7 +62,6 @@ func (s *ServicioNotificaciones) Notificar(notificacion Notificacion) error {
 	return nil
 }
 
-// NotificarCambioEstadoCompra es un método de conveniencia para notificar cambios de estado
 func (s *ServicioNotificaciones) NotificarCambioEstadoCompra(idCompra int, tipo TipoNotificacion, descripcion string, destinatario string) error {
 	notificacion := Notificacion{
 		Tipo:         tipo,
