@@ -80,10 +80,7 @@ La empresa tiene un sistema de microservicios que gestiona la compra de producto
 - **URL**: `http://localhost:8080/routes/1`
 - **Método**: GET
 
-<<<<<<< HEAD
-=======
 
->>>>>>> 039f347 (Mi commit antes del pull)
 ## Arquitectura del Sistema 🏗️
 
 La aplicación sigue una arquitectura de microservicios con los siguientes componentes principales:
@@ -98,10 +95,7 @@ La aplicación sigue una arquitectura de microservicios con los siguientes compo
 - **Domain**: Modelos de datos y reglas de negocio.
 - **Infraestructure**: Capa de persistencia en memoria e interfaz de servicio HTTP.  🔌
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 039f347 (Mi commit antes del pull)
 
 
 
